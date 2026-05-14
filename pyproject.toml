@@ -7,5 +7,18 @@ requires-python = ">=3.10"
 dependencies = [
     "fastmcp>=2.10.2",
     "llama-index>=0.12.45",
-    "pymilvus[model]>=2.5.11",
+    "pymilvus[model,milvus_lite]>=2.5.11",
+    "transformers>=4.0,<5",
 ]
+
+[project.scripts]
+markdown-rag-index = "mcp_markdown_rag.cli:main"
+markdown-rag-search = "mcp_markdown_rag.search:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mcp_markdown_rag*"]
