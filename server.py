@@ -1,3 +1,4 @@
+import argparse
 import os
 
 from fastmcp import FastMCP
@@ -18,6 +19,15 @@ from utils import (
     update_tracking_file,
 )
 
+_arg_parser = argparse.ArgumentParser()
+_arg_parser.add_argument("--db-path", default=None, help="Path to the .db directory")
+_args, _ = _arg_parser.parse_known_args()
+
+if _args.db_path:
+    import utils as _utils_module
+    _utils_module.INDEX_DATA_PATH = _args.db_path
+    INDEX_DATA_PATH = _args.db_path
+
 mcp = FastMCP(
     "mcp-markdown-rag",
     instructions="""This MCP server provides semantic search capabilities over markdown files using 
@@ -30,6 +40,7 @@ mcp = FastMCP(
 if not os.path.exists(INDEX_DATA_PATH):
     os.makedirs(INDEX_DATA_PATH)
 milvus_client = MilvusClient(os.path.join(INDEX_DATA_PATH, "milvus_markdown.db"))
+
 embedding_fn = model.DefaultEmbeddingFunction()
 
 
@@ -142,7 +153,7 @@ async def search_documents(
 
     return "\n---\n".join(
         [
-            f"File: **{res.entity.filename}**\n---\nText: {res.entity.text}\n---\n"
+            f"File: **{res.entity['filename']}**\n---\nText: {res.entity['text']}\n---\n"
             for res in results[0]
         ]
     )  # Iterate through the relevent docs and append the text
