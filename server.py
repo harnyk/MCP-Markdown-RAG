@@ -34,6 +34,7 @@ embedding_fn = model.DefaultEmbeddingFunction()
 
 
 def search(query: str, k: int) -> list[list[SearchResult]]:
+    milvus_client.load_collection(COLLECTION_NAME)
     query_vectors = embedding_fn.encode_queries([query])
     res = milvus_client.search(
         collection_name=COLLECTION_NAME,
